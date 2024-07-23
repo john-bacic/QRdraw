@@ -16,7 +16,7 @@ function startDrawing(e) {
   const { x, y } = getCoordinates(e)
   lastX = x
   lastY = y
-  currentPath = [[0, 0]] // Starting point of new path
+  currentPath = [[x, y]] // Store absolute coordinates
 }
 
 function stopDrawing() {
@@ -42,11 +42,9 @@ function draw(e) {
 
   const { x, y } = getCoordinates(e)
 
-  // Only record point if there's a significant change in direction
+  // Only record point if there's a significant change in position
   if (Math.abs(x - lastX) > 5 || Math.abs(y - lastY) > 5) {
-    const dx = x - lastX
-    const dy = y - lastY
-    currentPath.push([dx, dy])
+    currentPath.push([x, y]) // Store absolute coordinates
 
     ctx.beginPath()
     ctx.moveTo(lastX, lastY)

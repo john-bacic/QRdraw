@@ -34,14 +34,11 @@
             ctx.strokeStyle = '#000';
 
             paths.forEach(path => {
-                let x = 0, y = 0;
                 ctx.beginPath();
-                ctx.moveTo(x, y);
+                ctx.moveTo(path[0][0], path[0][1]);
 
-                for (let [dx, dy] of path) {
-                    x += dx;
-                    y += dy;
-                    ctx.lineTo(x, y);
+                for (let i = 1; i < path.length; i++) {
+                    ctx.lineTo(path[i][0], path[i][1]);
                 }
                 ctx.stroke();
             });
