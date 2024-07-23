@@ -30,16 +30,12 @@
             }
         }
 
-        // Get id from URL parameter
+        // Get data from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        if (id) {
-            // In a real application, you would fetch the drawing data from your server using this id
-            // For this example, we'll use localStorage to simulate server-side storage
-            const drawingData = localStorage.getItem(id);
-            if (drawingData) {
-                drawFromData(drawingData);
-            }
+        const encodedData = urlParams.get('data');
+        if (encodedData) {
+            const decodedData = decodeURIComponent(encodedData);
+            drawFromData(decodedData);
         }
     </script>
 </body>
