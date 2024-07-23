@@ -43,18 +43,16 @@ function draw(e) {
 function generateQRCode() {
   const data = JSON.stringify(points)
 
-  // In a real application, you would send this data to your server
-  // and get back a unique ID. For this example, we'll generate a random ID.
+  // Generate a unique ID for the drawing
   const id = Math.random().toString(36).substr(2, 9)
 
-  const url = `http://yourdomain.com/view.html?id=${id}`
+  // Create a URL with the drawing data encoded
+  const url = `view.html?data=${encodeURIComponent(data)}`
+
   const qr = qrcode(0, 'L')
   qr.addData(url)
   qr.make()
   qrcodeDiv.innerHTML = qr.createImgTag(5)
-
-  // In a real application, you would save the 'data' on your server with this 'id'
-  console.log(`Drawing data for id ${id}:`, data)
 }
 
 canvas.addEventListener('mousedown', startDrawing)

@@ -30,14 +30,11 @@
             }
         }
 
-        // Get id from URL parameter
+        // Get data from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        if (id) {
-            // In a real application, you would fetch the drawing data from your server using this id
-            // For this example, we'll just use some dummy data
-            const dummyData = JSON.stringify([[50,50],[100,100],[150,50],[200,100]]);
-            drawFromData(dummyData);
+        const drawingData = urlParams.get('data');
+        if (drawingData) {
+            drawFromData(drawingData);
         }
     </script>
 </body>
