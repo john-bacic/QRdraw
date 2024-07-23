@@ -1,29 +1,44 @@
 body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    padding: 0;
+    overflow: hidden;
 }
 
 #app {
-    text-align: center;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
 }
 
 canvas {
-    border: 1px solid #000;
-    background-color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#counter-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
 }
 
 button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
 }
 
 #qrcode {
-    margin-top: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 10px;
+    z-index: 3;
+    display: none;
 }

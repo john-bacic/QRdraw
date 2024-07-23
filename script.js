@@ -2,21 +2,57 @@ const canvas = document.getElementById('drawingCanvas')
 const ctx = canvas.getContext('2d')
 const generateQRButton = document.getElementById('generateQR')
 const qrcodeDiv = document.getElementById('qrcode')
+const progressRing = document.getElementById('progress-ring')
+const counterText = document.getElementById('counter-text')
 
 let isDrawing = false
 let paths = []
 let currentPath = []
 let lastX, lastY
 
-canvas.width = 300
-canvas.height = 300
+function resizeCanvas() {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+}
+
+resizeCanvas()
+window.addEventListener('resize', resizeCanvas)
+
+const MAX_POINTS = 220
+
+const RING_CIRCUMFERENCE = 2 * Math.PI * 25 // 25 is the radius of our SVG circle
+
+function updateCounter() {
+  const totalPoints =
+    paths.reduce((sum, path) => sum + path.length, 0) + currentPath.length
+  const used = totalPoints
+  const percentage = (used / MAX_POINTS) * 100
+
+  // Update the ring
+  const offset = RING_CIRCUMFERENCE - (percentage / 100) * RING_CIRCUMFERENCE
+  progressRing.style.strokeDashoffset = offset
+
+  // Update the text
+  counterText.textContent = used
+
+  if (used >= MAX_POINTS) {
+    stopDrawing()
+    canvas.style.cursor = 'not-allowed'
+    progressRing.style.stroke = 'red'
+  }
+}
 
 function startDrawing(e) {
+  const totalPoints =
+    paths.reduce((sum, path) => sum + path.length, 0) + currentPath.length
+  if (totalPoints >= MAX_POINTS) return
+
   isDrawing = true
   const { x, y } = getCoordinates(e)
   lastX = x
   lastY = y
-  currentPath = [[x, y]] // Store absolute coordinates
+  currentPath = [[x, y]]
+  updateCounter()
 }
 
 function stopDrawing() {
@@ -26,6 +62,7 @@ function stopDrawing() {
       paths.push(currentPath)
     }
     currentPath = []
+    updateCounter()
   }
 }
 
@@ -42,9 +79,15 @@ function draw(e) {
 
   const { x, y } = getCoordinates(e)
 
-  // Only record point if there's a significant change in position
+  const totalPoints =
+    paths.reduce((sum, path) => sum + path.length, 0) + currentPath.length
+  if (totalPoints >= MAX_POINTS) {
+    stopDrawing()
+    return
+  }
+
   if (Math.abs(x - lastX) > 5 || Math.abs(y - lastY) > 5) {
-    currentPath.push([x, y]) // Store absolute coordinates
+    currentPath.push([x, y])
 
     ctx.beginPath()
     ctx.moveTo(lastX, lastY)
@@ -53,6 +96,8 @@ function draw(e) {
 
     lastX = x
     lastY = y
+
+    updateCounter()
   }
 }
 
@@ -67,6 +112,7 @@ function compressPoints(paths) {
     .join(';')
 }
 
+// Replace the generateQRCode function with this:
 function generateQRCode() {
   if (currentPath.length > 1) {
     paths.push(currentPath)
@@ -74,11 +120,14 @@ function generateQRCode() {
   const compressed = compressPoints(paths)
   const url = `https://john-bacic.github.io/QRdraw/view.html?d=${compressed}`
 
-  const qr = qrcode(0, 'L')
-  qr.addData(url)
-  qr.make()
-  qrcodeDiv.innerHTML = qr.createImgTag(5)
+  // Encode the URL to pass it safely in the query string
+  const encodedUrl = encodeURIComponent(url)
+
+  // Redirect to the QR code page
+  window.location.href = `qr.html?url=${encodedUrl}`
 }
+
+// Rest of the script remains the same
 
 canvas.addEventListener('mousedown', startDrawing)
 canvas.addEventListener('mousemove', draw)
@@ -97,3 +146,5 @@ canvas.addEventListener('touchmove', (e) => {
   draw(e.touches[0])
 })
 canvas.addEventListener('touchend', stopDrawing)
+
+updateCounter()

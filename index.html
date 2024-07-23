@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draw to QR Code</title>
+    <title>QR Draw</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="app">
         <canvas id="drawingCanvas"></canvas>
+        <div id="counter-container">
+            <svg width="60" height="60" viewBox="0 0 60 60">
+                <circle cx="30" cy="30" r="25" fill="none" stroke="#e0e0e0" stroke-width="5"/>
+                <circle id="progress-ring" cx="30" cy="30" r="25" fill="none" stroke="#ff9900" stroke-width="5" stroke-dasharray="157" stroke-dashoffset="157" transform="rotate(-90 30 30)"/>
+            </svg>
+            <span id="counter-text">0</span>
+        </div>
         <button id="generateQR">Generate QR Code</button>
-        <div id="qrcode"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script src="script.js"></script>

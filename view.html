@@ -5,16 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Drawing</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
         canvas {
-            border: 1px solid #000;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <canvas id="viewCanvas" width="300" height="300"></canvas>
+    <canvas id="viewCanvas"></canvas>
     <script>
         const canvas = document.getElementById('viewCanvas');
         const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (window.drawingData) {
+                drawFromData(window.drawingData);
+            }
+        }
 
         function decompressPoints(compressed) {
             return compressed.split(';').map(path => 
@@ -29,16 +42,20 @@
 
         function drawFromData(data) {
             const paths = decompressPoints(data);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.lineWidth = 2;
             ctx.lineCap = 'round';
             ctx.strokeStyle = '#000';
 
+            const scaleX = canvas.width / 600;
+            const scaleY = canvas.height / 600;
+
             paths.forEach(path => {
                 ctx.beginPath();
-                ctx.moveTo(path[0][0], path[0][1]);
+                ctx.moveTo(path[0][0] * scaleX, path[0][1] * scaleY);
 
                 for (let i = 1; i < path.length; i++) {
-                    ctx.lineTo(path[i][0], path[i][1]);
+                    ctx.lineTo(path[i][0] * scaleX, path[i][1] * scaleY);
                 }
                 ctx.stroke();
             });
@@ -48,8 +65,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const compressedData = urlParams.get('d');
         if (compressedData) {
-            drawFromData(compressedData);
+            window.drawingData = compressedData;
+            resizeCanvas();
         }
+
+        window.addEventListener('resize', resizeCanvas);
     </script>
 </body>
 </html>
