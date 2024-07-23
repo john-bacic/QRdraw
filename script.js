@@ -5,50 +5,62 @@ const qrcodeDiv = document.getElementById('qrcode')
 
 let isDrawing = false
 let points = []
+let lastX, lastY
 
 canvas.width = 300
 canvas.height = 300
 
 function startDrawing(e) {
   isDrawing = true
-  draw(e)
+  const { x, y } = getCoordinates(e)
+  lastX = x
+  lastY = y
+  points.push([0, 0]) // Starting point
 }
 
 function stopDrawing() {
   isDrawing = false
 }
 
-function draw(e) {
-  if (!isDrawing) return
-
+function getCoordinates(e) {
   const rect = canvas.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
-
-  points.push([x, y])
-
-  ctx.lineWidth = 2
-  ctx.lineCap = 'round'
-  ctx.strokeStyle = '#000'
-
-  if (points.length > 1) {
-    const prevPoint = points[points.length - 2]
-    ctx.beginPath()
-    ctx.moveTo(prevPoint[0], prevPoint[1])
-    ctx.lineTo(x, y)
-    ctx.stroke()
+  return {
+    x: Math.round(e.clientX - rect.left),
+    y: Math.round(e.clientY - rect.top),
   }
 }
 
+function draw(e) {
+  if (!isDrawing) return
+
+  const { x, y } = getCoordinates(e)
+
+  // Only record point if there's a significant change in direction
+  if (Math.abs(x - lastX) > 5 || Math.abs(y - lastY) > 5) {
+    const dx = x - lastX
+    const dy = y - lastY
+    points.push([dx, dy])
+
+    ctx.beginPath()
+    ctx.moveTo(lastX, lastY)
+    ctx.lineTo(x, y)
+    ctx.stroke()
+
+    lastX = x
+    lastY = y
+  }
+}
+
+function compressPoints(points) {
+  return points
+    .map(([x, y]) => [x.toString(36), y.toString(36)])
+    .flat()
+    .join(',')
+}
+
 function generateQRCode() {
-  // Generate a unique ID for the drawing
-  const id = Math.random().toString(36).substr(2, 9)
-
-  // Encode the drawing data
-  const encodedData = encodeURIComponent(JSON.stringify(points))
-
-  // Create a URL with the drawing data
-  const url = `https://john-bacic.github.io/QRdraw/view.html?id=${id}&data=${encodedData}`
+  const compressed = compressPoints(points)
+  const url = `https://john-bacic.github.io/QRdraw/view.html?d=${compressed}`
 
   const qr = qrcode(0, 'L')
   qr.addData(url)
