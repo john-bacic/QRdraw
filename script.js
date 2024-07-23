@@ -41,13 +41,15 @@ function draw(e) {
 }
 
 function generateQRCode() {
-  const data = JSON.stringify(points)
-
   // Generate a unique ID for the drawing
   const id = Math.random().toString(36).substr(2, 9)
 
-  // Create a URL with the drawing data encoded
-  const url = `view.html?data=${encodeURIComponent(data)}`
+  // In a real application, you would send the drawing data to a server here
+  // For this example, we'll use localStorage to simulate server-side storage
+  localStorage.setItem(id, JSON.stringify(points))
+
+  // Create a URL with just the drawing ID
+  const url = `view.html?id=${id}`
 
   const qr = qrcode(0, 'L')
   qr.addData(url)
