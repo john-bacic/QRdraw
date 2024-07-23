@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Drawing</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="viewCanvas" width="300" height="300"></canvas>
+    <script>
+        const canvas = document.getElementById('viewCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawFromData(data) {
+            const points = JSON.parse(data);
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
+
+            for (let i = 1; i < points.length; i++) {
+                ctx.beginPath();
+                ctx.moveTo(points[i-1][0], points[i-1][1]);
+                ctx.lineTo(points[i][0], points[i][1]);
+                ctx.stroke();
+            }
+        }
+
+        // Get id from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id) {
+            // In a real application, you would fetch the drawing data from your server using this id
+            // For this example, we'll just use some dummy data
+            const dummyData = JSON.stringify([[50,50],[100,100],[150,50],[200,100]]);
+            drawFromData(dummyData);
+        }
+    </script>
+</body>
+</html>
