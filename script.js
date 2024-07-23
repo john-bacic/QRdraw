@@ -4,7 +4,8 @@ const generateQRButton = document.getElementById('generateQR')
 const qrcodeDiv = document.getElementById('qrcode')
 
 let isDrawing = false
-let points = []
+let paths = []
+let currentPath = []
 let lastX, lastY
 
 canvas.width = 300
@@ -15,11 +16,17 @@ function startDrawing(e) {
   const { x, y } = getCoordinates(e)
   lastX = x
   lastY = y
-  points.push([0, 0]) // Starting point
+  currentPath = [[0, 0]] // Starting point of new path
 }
 
 function stopDrawing() {
-  isDrawing = false
+  if (isDrawing) {
+    isDrawing = false
+    if (currentPath.length > 1) {
+      paths.push(currentPath)
+    }
+    currentPath = []
+  }
 }
 
 function getCoordinates(e) {
@@ -39,7 +46,7 @@ function draw(e) {
   if (Math.abs(x - lastX) > 5 || Math.abs(y - lastY) > 5) {
     const dx = x - lastX
     const dy = y - lastY
-    points.push([dx, dy])
+    currentPath.push([dx, dy])
 
     ctx.beginPath()
     ctx.moveTo(lastX, lastY)
@@ -51,15 +58,22 @@ function draw(e) {
   }
 }
 
-function compressPoints(points) {
-  return points
-    .map(([x, y]) => [x.toString(36), y.toString(36)])
-    .flat()
-    .join(',')
+function compressPoints(paths) {
+  return paths
+    .map((path) =>
+      path
+        .map(([x, y]) => [x.toString(36), y.toString(36)])
+        .flat()
+        .join(',')
+    )
+    .join(';')
 }
 
 function generateQRCode() {
-  const compressed = compressPoints(points)
+  if (currentPath.length > 1) {
+    paths.push(currentPath)
+  }
+  const compressed = compressPoints(paths)
   const url = `https://john-bacic.github.io/QRdraw/view.html?d=${compressed}`
 
   const qr = qrcode(0, 'L')

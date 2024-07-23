@@ -17,30 +17,34 @@
         const ctx = canvas.getContext('2d');
 
         function decompressPoints(compressed) {
-            return compressed.split(',').map(n => parseInt(n, 36))
-                .reduce((acc, val, i) => {
-                    if (i % 2 === 0) acc.push([val]);
-                    else acc[acc.length - 1].push(val);
-                    return acc;
-                }, []);
+            return compressed.split(';').map(path => 
+                path.split(',').map(n => parseInt(n, 36))
+                    .reduce((acc, val, i) => {
+                        if (i % 2 === 0) acc.push([val]);
+                        else acc[acc.length - 1].push(val);
+                        return acc;
+                    }, [])
+            );
         }
 
         function drawFromData(data) {
-            const points = decompressPoints(data);
+            const paths = decompressPoints(data);
             ctx.lineWidth = 2;
             ctx.lineCap = 'round';
             ctx.strokeStyle = '#000';
 
-            let x = 0, y = 0;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
+            paths.forEach(path => {
+                let x = 0, y = 0;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
 
-            for (let [dx, dy] of points) {
-                x += dx;
-                y += dy;
-                ctx.lineTo(x, y);
-            }
-            ctx.stroke();
+                for (let [dx, dy] of path) {
+                    x += dx;
+                    y += dy;
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            });
         }
 
         // Get data from URL parameter
