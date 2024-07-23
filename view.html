@@ -3,73 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Drawing</title>
+    <title>QR Code</title>
     <style>
         body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
-        canvas {
-            display: block;
+        #qrcode {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        #backButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
         }
     </style>
 </head>
 <body>
-    <canvas id="viewCanvas"></canvas>
+    <button id="backButton">Back to Drawing</button>
+    <div id="qrcode"></div>
+    <button id="viewButton">View Drawing</button>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script>
-        const canvas = document.getElementById('viewCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (window.drawingData) {
-                drawFromData(window.drawingData);
-            }
-        }
-
-        function decompressPoints(compressed) {
-            return compressed.split(';').map(path => 
-                path.split(',').map(n => parseInt(n, 36))
-                    .reduce((acc, val, i) => {
-                        if (i % 2 === 0) acc.push([val]);
-                        else acc[acc.length - 1].push(val);
-                        return acc;
-                    }, [])
-            );
-        }
-
-        function drawFromData(data) {
-            const paths = decompressPoints(data);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#000';
-
-            const scaleX = canvas.width / 600;
-            const scaleY = canvas.height / 600;
-
-            paths.forEach(path => {
-                ctx.beginPath();
-                ctx.moveTo(path[0][0] * scaleX, path[0][1] * scaleY);
-
-                for (let i = 1; i < path.length; i++) {
-                    ctx.lineTo(path[i][0] * scaleX, path[i][1] * scaleY);
-                }
-                ctx.stroke();
-            });
-        }
-
-        // Get data from URL parameter
+        // Get the URL from the query string
         const urlParams = new URLSearchParams(window.location.search);
-        const compressedData = urlParams.get('d');
-        if (compressedData) {
-            window.drawingData = compressedData;
-            resizeCanvas();
-        }
+        const url = decodeURIComponent(urlParams.get('url'));
 
-        window.addEventListener('resize', resizeCanvas);
+        // Generate the QR code
+        const qr = qrcode(0, 'L');
+        qr.addData(url);
+        qr.make();
+        document.getElementById('qrcode').innerHTML = qr.createImgTag(5);
+
+        // Set up the back button
+        document.getElementById('backButton').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        // Set up the view button
+        document.getElementById('viewButton').addEventListener('click', () => {
+            window.location.href = url;
+        });
     </script>
 </body>
 </html>
