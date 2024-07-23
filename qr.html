@@ -7,6 +7,7 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -19,20 +20,25 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
         }
         #backButton {
             position: absolute;
             top: 20px;
             left: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <button id="backButton">Back to Drawing</button>
     <div id="qrcode"></div>
+    <button id="viewButton">View Drawing</button>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script>
         // Get the URL from the query string
@@ -48,6 +54,11 @@
         // Set up the back button
         document.getElementById('backButton').addEventListener('click', () => {
             window.history.back();
+        });
+
+        // Set up the view button
+        document.getElementById('viewButton').addEventListener('click', () => {
+            window.location.href = url;
         });
     </script>
 </body>
