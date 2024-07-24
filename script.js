@@ -21,7 +21,7 @@ function resizeCanvas() {
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 
-const MAX_POINTS = 75
+const MAX_POINTS = 72
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 25 // 25 is the radius of our SVG circle
 
