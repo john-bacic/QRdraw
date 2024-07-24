@@ -42,3 +42,19 @@ button {
     z-index: 3;
     display: none;
 }
+
+#densitySlider {
+    position: absolute;
+    
+    top: 48px;
+    right: 40px;
+    z-index: 2;
+}
+
+#densityValue {
+    position: absolute;
+    
+    top: 18px;
+    right: 105px;
+    z-index: 2;
+}
