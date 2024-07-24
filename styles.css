@@ -49,7 +49,32 @@ button {
     top: 48px;
     right: 40px;
     z-index: 2;
+
+    width: 125px; /* Set thumb width to at least 44px */
+    height: 50px; /* Set thumb height to at least 44px */
+
 }
+
+
+#densitySlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 44px; /* Set thumb width to at least 44px */
+    height: 44px; /* Set thumb height to at least 44px */
+    background: #4CAF50;
+    cursor: pointer;
+    border-radius: 50%; /* Make it circular */
+  }
+
+  #densitySlider::-moz-range-thumb {
+    width: 44px; /* Set thumb width to at least 44px */
+    height: 44px; /* Set thumb height to at least 44px */
+    background: #4CAF50;
+    cursor: pointer;
+    border-radius: 50%; /* Make it circular */
+  }
+
+
 
 #densityValue {
     position: absolute;
