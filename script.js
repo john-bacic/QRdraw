@@ -4,11 +4,14 @@ const generateQRButton = document.getElementById('generateQR')
 const qrcodeDiv = document.getElementById('qrcode')
 const progressRing = document.getElementById('progress-ring')
 const counterText = document.getElementById('counter-text')
+const densitySlider = document.getElementById('densitySlider')
+const densityValue = document.getElementById('densityValue')
 
 let isDrawing = false
 let paths = []
 let currentPath = []
 let lastX, lastY
+let pointDensity = 5 // Default density
 
 function resizeCanvas() {
   canvas.width = window.innerWidth
@@ -86,7 +89,10 @@ function draw(e) {
     return
   }
 
-  if (Math.abs(x - lastX) > 5 || Math.abs(y - lastY) > 5) {
+  // Adjust the threshold calculation for a wider range
+  const threshold = Math.pow(2, 11 - pointDensity) // This will give a range from 2^10 to 2^1
+
+  if (Math.abs(x - lastX) > threshold || Math.abs(y - lastY) > threshold) {
     currentPath.push([x, y])
 
     ctx.beginPath()
@@ -112,7 +118,6 @@ function compressPoints(paths) {
     .join(';')
 }
 
-// Replace the generateQRCode function with this:
 function generateQRCode() {
   if (currentPath.length > 1) {
     paths.push(currentPath)
@@ -127,7 +132,11 @@ function generateQRCode() {
   window.location.href = `qr.html?url=${encodedUrl}`
 }
 
-// Rest of the script remains the same
+// Update the density slider event listener
+densitySlider.addEventListener('input', function (e) {
+  pointDensity = parseInt(e.target.value)
+  console.log(`Point density set to: ${pointDensity}`)
+})
 
 canvas.addEventListener('mousedown', startDrawing)
 canvas.addEventListener('mousemove', draw)
@@ -146,5 +155,29 @@ canvas.addEventListener('touchmove', (e) => {
   draw(e.touches[0])
 })
 canvas.addEventListener('touchend', stopDrawing)
+
+densitySlider.addEventListener('input', function (e) {
+  pointDensity = parseInt(e.target.value)
+  densityValue.textContent = pointDensity
+  console.log(`Point density set to: ${pointDensity}`)
+})
+
+document.addEventListener('DOMContentLoaded', function () {
+  var slider = document.getElementById('densitySlider')
+  var densityValue = document.getElementById('densityValue')
+  var progressRing = document.getElementById('progress-ring')
+  var counterText = document.getElementById('counter-text')
+
+  slider.addEventListener('input', function () {
+    densityValue.textContent = this.value
+
+    // Update progress ring
+    var progress = ((this.value - 1) / 9) * 157 // 157 is the total length of the circle
+    progressRing.setAttribute('stroke-dashoffset', 157 - progress)
+
+    // Update counter text
+    counterText.textContent = this.value
+  })
+})
 
 updateCounter()
