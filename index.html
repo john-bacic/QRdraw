@@ -7,8 +7,20 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+
+
+    
     <div id="app">
+
+
+
+        
         <canvas id="drawingCanvas"></canvas>
+
+
+
+
         <div id="counter-container">
             <svg width="60" height="60" viewBox="0 0 60 60">
                 <circle cx="30" cy="30" r="25" fill="none" stroke="#e0e0e0" stroke-width="5"/>
@@ -16,8 +28,22 @@
             </svg>
             <span id="counter-text">0</span>
         </div>
+
+
+        <div id="densityValue">5</div>
+        <input type="range" min="1" max="10" value="5" id="densitySlider" orient="vertical">
+
+
+        
         <button id="generateQR">Generate QR Code</button>
+
+
+
     </div>
+
+
+
+    
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
