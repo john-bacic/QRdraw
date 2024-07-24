@@ -60,7 +60,7 @@ button {
     right: 40px;
     z-index: 2;
 
-    width: 125px; /* Set thumb width to at least 44px */
+    width: 180px; /* Set thumb width to at least 44px */
     height: 50px; /* Set thumb height to at least 44px */
 
 }
@@ -90,6 +90,6 @@ button {
     position: absolute;
     
     top: 18px;
-    right: 105px;
+    right: 120px;
     z-index: 2;
 }
