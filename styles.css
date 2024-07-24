@@ -24,6 +24,16 @@ canvas {
     z-index: 2;
 }
 
+
+#counter-text {
+    position: absolute;
+    text-align: center;
+    top: 20px;
+    left: 23px;
+    z-index: 2;
+}
+
+
 button {
     position: absolute;
     bottom: 100px;
