@@ -11,7 +11,7 @@ let isDrawing = false
 let paths = []
 let currentPath = []
 let lastX, lastY
-let pointDensity = 5 // Default density
+let pointDensity = 6 // Default density
 
 function resizeCanvas() {
   canvas.width = window.innerWidth
